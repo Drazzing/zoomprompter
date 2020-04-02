@@ -1,0 +1,36 @@
+﻿<Window x:Class="LH.Common.Zoom.App.Wpf.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LH.Common.Zoom.App.Wpf"
+        mc:Ignorable="d"
+        Background="LightGreen"
+        WindowStyle="None"
+    WindowStartupLocation="CenterScreen"
+    ResizeMode="CanResize"
+        Title="Zoom Meeting Request" Height="288.582" Width="577.953"
+        >
+    <Grid Margin="0,0,0,5">
+        <Button x:Name="buttonAccept" Content="Accept" HorizontalAlignment="Left" Margin="68,153,0,0" VerticalAlignment="Top" Width="174" Height="78" Click="buttonAccept_Click" FontSize="36" FontWeight="Bold" BorderBrush="{x:Null}">
+            <Button.Background>
+                <RadialGradientBrush>
+                    <GradientStop Color="Green" Offset="1"/>
+                    <GradientStop Color="White"/>
+                </RadialGradientBrush>
+            </Button.Background>
+        </Button>
+        <Button x:Name="buttonDecline"  Content="Decline" HorizontalAlignment="Left" Margin="342,154,0,0" VerticalAlignment="Top" Width="174" Height="78" Click="buttonDecline_Click" FontSize="36" FontWeight="Bold" BorderBrush="{x:Null}">
+            <Button.Background>
+                <RadialGradientBrush>
+                    <GradientStop Color="Salmon" Offset="1"/>
+                    <GradientStop Color="White"/>
+                    <GradientStop Color="#FFFBFBFB"/>
+                </RadialGradientBrush>
+            </Button.Background>
+        </Button>
+        <Label x:Name="labelHeader"  Content="Incoming Call Request" HorizontalAlignment="Center" Margin="97,23,101,0" FontSize="36" Width="372" VerticalAlignment="Top"/>
+        <Label x:Name="labelZoomRequest" Content="https://lh-org.zoom.us"  HorizontalAlignment="Center" Margin="105,91,93,0" FontSize="15" Width="372" VerticalAlignment="Top"/>
+
+    </Grid>
+</Window>
