@@ -5,14 +5,23 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LH.Common.Zoom.App.Wpf"
         mc:Ignorable="d"
-        Background="LightGreen"
+        Background="{x:Null}"
+        BorderThickness="5px"
+        BorderBrush="ForestGreen"
         WindowStyle="None"
+        
     WindowStartupLocation="CenterScreen"
     ResizeMode="CanResize"
-        Title="Zoom Meeting Request" Height="288.582" Width="577.953"
+        Title="Zoom Meeting Request" Height="259.537" Width="627.611" Foreground="{x:Null}" FontFamily="Verdana" HorizontalAlignment="Center"
         >
-    <Grid Margin="0,0,0,5">
-        <Button x:Name="buttonAccept" Content="Accept" HorizontalAlignment="Left" Margin="68,153,0,0" VerticalAlignment="Top" Width="174" Height="78" Click="buttonAccept_Click" FontSize="36" FontWeight="Bold" BorderBrush="{x:Null}">
+    <Grid Margin="0,0,2,2">
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                <GradientStop Color="WhiteSmoke" Offset="1"/>
+                <GradientStop Color="#FF7AB81B"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+        <Button x:Name="buttonAccept" Content="Accept" HorizontalAlignment="Left" Margin="74,110,0,0" VerticalAlignment="Top" Width="174" Height="78" Click="buttonAccept_Click" FontSize="36" FontWeight="Bold" BorderBrush="#FFFFDC00">
             <Button.Background>
                 <RadialGradientBrush>
                     <GradientStop Color="Green" Offset="1"/>
@@ -20,7 +29,7 @@
                 </RadialGradientBrush>
             </Button.Background>
         </Button>
-        <Button x:Name="buttonDecline"  Content="Decline" HorizontalAlignment="Left" Margin="342,154,0,0" VerticalAlignment="Top" Width="174" Height="78" Click="buttonDecline_Click" FontSize="36" FontWeight="Bold" BorderBrush="{x:Null}">
+        <Button x:Name="buttonDecline"  Content="Decline" HorizontalAlignment="Left" Margin="336,111,0,0" VerticalAlignment="Top" Width="174" Height="78" Click="buttonDecline_Click" FontSize="36" FontWeight="Bold" BorderBrush="#FFF90808">
             <Button.Background>
                 <RadialGradientBrush>
                     <GradientStop Color="Salmon" Offset="1"/>
@@ -29,8 +38,9 @@
                 </RadialGradientBrush>
             </Button.Background>
         </Button>
-        <Label x:Name="labelHeader"  Content="Incoming Call Request" HorizontalAlignment="Center" Margin="97,23,101,0" FontSize="36" Width="372" VerticalAlignment="Top"/>
-        <Label x:Name="labelZoomRequest" Content="https://lh-org.zoom.us"  HorizontalAlignment="Center" Margin="105,91,93,0" FontSize="15" Width="372" VerticalAlignment="Top"/>
+        <Label x:Name="labelHeader"  Content="Incoming Video Call Request" HorizontalAlignment="Center" Margin="41,10,41,0" FontSize="36" Width="534" VerticalAlignment="Top" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"/>
+        <Label x:Name="labelZoomRequest" Content="https://lh-org.zoom.us"  HorizontalAlignment="Left" Margin="10,202,0,0" FontSize="15" Width="588" VerticalAlignment="Top"/>
+        <Label x:Name="labelFrom"  Content="" HorizontalAlignment="Center" Margin="37,57,37,0" FontSize="22" Width="534" VerticalAlignment="Top" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"/>
 
     </Grid>
 </Window>

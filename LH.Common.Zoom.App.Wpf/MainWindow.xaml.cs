@@ -1,13 +1,23 @@
-﻿// Copyright (c) Shawn Rosewarne. All rights reserved.
-// This code is licensed under MIT license (see LICENSE.md for details)
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Media;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace LH.Common.Zoom.App.Wpf
@@ -33,29 +43,35 @@ namespace LH.Common.Zoom.App.Wpf
             {
                 var remoteEP = new IPEndPoint(IPAddress.Any, 11000);
                 var data = udpServer.Receive(ref remoteEP);
-                var url = Encoding.ASCII.GetString(data);
-                var resMsg = "Message received";
+                var msg = Encoding.ASCII.GetString(data);
+                var validUrl = msg.StartsWith("https://lh-org");
+                var resMsg = validUrl ? "Message received" : "Invalid URL - Please make sure you have correct ZOOM Meeting URL for Lifehouse";
                 byte[] bytes = Encoding.ASCII.GetBytes(resMsg);
                 udpServer.Send(bytes, bytes.Length, remoteEP); // reply back
+                if (validUrl)
+                {
+                    Thread confirmThread = new Thread(() => StartupMessageUdp(msg));
+                    confirmThread.Start();
+                }
 
-                Thread confirmThread = new Thread(() => StartupMessageUdp(url));
-                confirmThread.Start();
             }
 
         }
 
 
-        private void StartupMessageUdp(string zoomUrl)
+        private void StartupMessageUdp(string msg)
         {
             _soundStarted = false;
+            var vals = msg.Split(new string[] { "|" }, StringSplitOptions.RemoveEmptyEntries);
             Thread soundThread = new Thread(() => PlaySoundTimer());
             soundThread.Start();
-
             Dispatcher.Invoke(new Action(() =>
             {
-                this.labelZoomRequest.Content = zoomUrl;
-                this.Show();
+                this.labelZoomRequest.Content = vals[0];
+                this.labelFrom.Content = vals.Count() > 1 ? $"From: {vals[1]}" : string.Empty;
             }));
+
+            FocusWindow();
 
         }
         private static void StartZoomUrl(string url)
@@ -67,36 +83,6 @@ namespace LH.Common.Zoom.App.Wpf
             Process.Start(psi);
         }
 
-        public class AutoClosingMessageBox
-        {
-            System.Threading.Timer _timeoutTimer;
-            string _caption;
-            AutoClosingMessageBox(string text, string caption, int timeout, MessageBoxButton messageBoxButton, MessageBoxImage messageBoxImage)
-            {
-                _caption = caption;
-                _timeoutTimer = new System.Threading.Timer(OnTimerElapsed,
-                    null, timeout, System.Threading.Timeout.Infinite);
-                MessageBox.Show(text, caption, messageBoxButton, messageBoxImage);
-            }
-
-            public static void Show(string text, string caption, int timeout, MessageBoxButton messageBoxButton, MessageBoxImage messageBoxImage)
-            {
-                new AutoClosingMessageBox(text, caption, timeout, messageBoxButton, messageBoxImage);
-            }
-
-            void OnTimerElapsed(object state)
-            {
-                IntPtr mbWnd = FindWindow(null, _caption);
-                if (mbWnd != IntPtr.Zero)
-                    SendMessage(mbWnd, WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
-                _timeoutTimer.Dispose();
-            }
-            const int WM_CLOSE = 0x0010;
-            [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
-            static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
-            [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto)]
-            static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, IntPtr lParam);
-        }
 
         private void buttonAccept_Click(object sender, RoutedEventArgs e)
         {
@@ -116,7 +102,27 @@ namespace LH.Common.Zoom.App.Wpf
                 if (!_soundStarted) { break; }
                 SystemSounds.Beep.Play();
                 System.Threading.Thread.Sleep(2000);
+
             }
+            Dispatcher.Invoke(new Action(() =>
+            {
+                this.labelZoomRequest.Content = string.Empty;
+                this.Hide();
+            }));
+        }
+
+        protected void FocusWindow()
+        {
+
+            Dispatcher.Invoke(new Action(() =>
+            {
+                this.Activate();
+                this.WindowState = System.Windows.WindowState.Normal;
+                this.Topmost = true;
+                this.Focus();
+                this.Show();
+            }));
+
         }
 
         private void buttonDecline_Click(object sender, RoutedEventArgs e)
